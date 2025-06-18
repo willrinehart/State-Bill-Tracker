@@ -10,6 +10,10 @@ HEADERS = {
 }
 
 def get_jurisdictions():
+    """
+    Get the list of all jurisdictions.
+    @return a list of state abbreviations.
+    """
     time.sleep(1)  # Add a 1 second delay to avoid rate limiting
     url = f"{BASE_URL}/jurisdictions"
     resp = requests.get(url, headers=HEADERS)
@@ -19,6 +23,11 @@ def get_jurisdictions():
     return [j['name'] for j in data['results'] if j['classification'] == 'state']
 
 def search_ai_bills(jurisdiction):
+    """
+    Search AI bills in given jurisdiction
+    @param jurisdiction
+    @return bills.
+    """
     url = f"{BASE_URL}/bills"
     params = {
         "jurisdiction": jurisdiction,
@@ -55,7 +64,7 @@ def main():
         try:
             bills = search_ai_bills(state)
             all_bills.extend(bills)
-            time.sleep(1)  # Be polite to the API
+            time.sleep(1)  # Since openstates default API tier only processes one request per second
         except Exception as e:
             print(f"Error with state {state}: {e}")
             continue
