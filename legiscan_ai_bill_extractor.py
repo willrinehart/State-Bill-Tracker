@@ -21,7 +21,8 @@ def get_states():
 def get_sessions(state):
     """
     Get the list of sessions for a given state.
-    Returns a list of session_id.
+    @param state
+    @return a list of session_id.
     """
     url = f"{BASE_URL}?key={API_KEY}&op=getSessionList&state={state}"
     resp = requests.get(url)
@@ -33,7 +34,9 @@ def get_sessions(state):
 def search_ai_bills(state, session_id):
     """
     Search for AI-related bills in a given state/session.
-    Returns a list of bill dictionaries.
+    @param state
+    @param session_id
+    @return a list of bill dictionaries.
     """
     url = f"{BASE_URL}?key={API_KEY}&op=search&state={state}&query=artificial+intelligence&session_id={session_id}"
     resp = requests.get(url)
@@ -44,7 +47,7 @@ def search_ai_bills(state, session_id):
     for key, bill in searchresult.items():
         if key == "summary":
             continue
-        # Add the state to the bill dict for reference
+        # Add the state to the bill dictionary for reference
         bill['State'] = state
         bills.append(bill)
     return bills
@@ -67,7 +70,7 @@ def main():
             latest_session = sessions[-1]
             bills = search_ai_bills(state, latest_session)
             all_bills.extend(bills)
-            time.sleep(1)  # Be polite to the API
+            time.sleep(1)  # To avoid 429 error
         except Exception as e:
             print(f"Error with state {state}: {e}")
             continue
