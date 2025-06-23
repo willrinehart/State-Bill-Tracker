@@ -11,16 +11,15 @@ HEADERS = {
 
 def get_jurisdictions():
     """
-    Get the list of all jurisdictions.
-    @return a list of state abbreviations.
+    Get the list of all state-level jurisdictions.
+    @return a list of state names.
     """
     time.sleep(1)  # Add a 1 second delay to avoid rate limiting
-    url = f"{BASE_URL}/jurisdictions"
+    url = f"{BASE_URL}/jurisdictions?classification=state"
     resp = requests.get(url, headers=HEADERS)
     resp.raise_for_status()
     data = resp.json()
-    # Get all state-level jurisdictions
-    return [j['name'] for j in data['results'] if j['classification'] == 'state']
+    return [j['name'] for j in data['results']]
 
 def search_ai_bills(jurisdiction):
     """
@@ -33,7 +32,7 @@ def search_ai_bills(jurisdiction):
         "jurisdiction": jurisdiction,
         "q": "artificial intelligence",
         "sort": "updated_desc",
-        "per_page": 50  # adjust as needed
+        "per_page": 20  # adjust as needed
     }
     resp = requests.get(url, headers=HEADERS, params=params)
     resp.raise_for_status()
