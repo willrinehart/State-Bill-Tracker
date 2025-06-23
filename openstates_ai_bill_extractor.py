@@ -44,6 +44,7 @@ def search_ai_bills(jurisdiction):
             "bill_id": bill.get("id", ""),
             "identifier": bill.get("identifier", ""),
             "title": bill.get("title", ""),
+            "abstracts": "; ".join([a.get("abstract", "") for a in bill.get("abstracts", [])]) if bill.get("abstracts") else "",
             "description": bill.get("description", ""),
             "classification": ", ".join(bill.get("classification", [])),
             "subjects": ", ".join(bill.get("subject", [])) if bill.get("subject") else "",
