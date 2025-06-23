@@ -53,6 +53,17 @@ def search_ai_bills(state, session_id):
     return bills
 
 
+def get_bill_details(bill_id):
+    """
+    Retrieve detailed information for a specific bill by bill_id.
+    """
+    url = f"{BASE_URL}?key={API_KEY}&op=getBill&id={bill_id}"
+    resp = requests.get(url)
+    resp.raise_for_status()
+    data = resp.json()
+    return data['bill']
+
+
 def main():
     print("=== LegiScan AI Bill Extractor ===")
     all_bills = []
@@ -69,6 +80,15 @@ def main():
                 continue
             latest_session = sessions[-1]
             bills = search_ai_bills(state, latest_session)
+            # Fetch and append description for each bill
+            for bill in bills:
+                try:
+                    details = get_bill_details(bill['bill_id'])
+                    bill['description'] = details.get('description', '')
+                except Exception as e:
+                    print(f"  Could not fetch details for bill {bill['bill_id']}: {e}")
+                    bill['description'] = ''
+                time.sleep(0.5)  # To avoid 429 error
             all_bills.extend(bills)
             time.sleep(1)  # To avoid 429 error
         except Exception as e:
